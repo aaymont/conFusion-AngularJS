@@ -49,7 +49,7 @@ gulp.task('usemin',['jshint'], function () {
   return gulp.src('./app/*.html')
        .pipe(usemin({
         css:[minifycss(),rev()],
-        js: [ngannotate(),concat(),uglify(),rev()]
+        js: [ngannotate(),uglify(),rev()]
       }))
       .pipe(gulp.dest('dist/'));
 });
@@ -97,9 +97,10 @@ gulp.task('browser-sync', ['default'], function () {
    
    browserSync.init(files, {
       server: {
-         baseDir: "dist",
+         baseDir: "./dist",
          index: "index.html"
-      }
+      },
+       port: 7575
    });
    
         // Watch any files in dist/, reload on change
@@ -107,6 +108,6 @@ gulp.task('browser-sync', ['default'], function () {
     });
 
 // Default task
-gulp.task('default', ['clean'], function() {
+gulp.task('default', ['clean','inject','inject-vendor'], function() {
     gulp.start('usemin', 'usemin-views', 'imagemin','copyfonts');
 });
