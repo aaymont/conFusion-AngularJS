@@ -14,6 +14,8 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     del = require('del'),
     pngquant = require('imagemin-pngquant'),
+    inject = require('gulp-inject'),
+    wiredep = require('wiredep').stream;
     ngannotate = require('gulp-ng-annotate');
 
 gulp.task('jshint', function() {
@@ -25,6 +27,22 @@ gulp.task('jshint', function() {
 // Clean
 gulp.task('clean', function() {
     return del(['dist']);
+});
+
+gulp.task('inject', function() {    
+    gulp.src('./app/index.html')
+        .pipe(inject(gulp.src(['./app/scripts/**/*.js','./app/styles/**/*.css'],{read:false}), {relative:true}))
+        .pipe(gulp.dest('./app'));
+            
+});
+
+gulp.task('inject-vendor', function() {
+    gulp.src('app/index.html')
+        .pipe(wiredep({
+            directory: './bower_components/',
+            bowerJson: require('./bower.json')
+    }))
+    .pipe(gulp.dest('app'));
 });
 
 gulp.task('usemin',['jshint'], function () {
